@@ -12,20 +12,23 @@ namespace GitHub.Internals
     {
         static Random _random = new Random(DateTimeOffset.UtcNow.Millisecond);
 
+        private readonly Action _setup;
         readonly Func<Task<T>> _control;
         readonly Func<Task<T>> _candidate;
         readonly string _name;
 
-        public ExperimentInstance(string name, Func<T> control, Func<T> candidate)
+        public ExperimentInstance(string name, Func<T> control, Func<T> candidate, Action setup)
         {
             _name = name;
+            _setup = setup;
             _control = () => Task.FromResult(control());
             _candidate = () => Task.FromResult(candidate());
         }
 
-        public ExperimentInstance(string name, Func<Task<T>> control, Func<Task<T>> candidate)
+        public ExperimentInstance(string name, Func<Task<T>> control, Func<Task<T>> candidate, Action setup)
         {
             _name = name;
+            _setup = setup;
             _control = control;
             _candidate = candidate;
         }
@@ -34,6 +37,9 @@ namespace GitHub.Internals
         {
             // Randomize ordering...
             var runControlFirst = _random.Next(0, 2) == 0;
+
+            _setup?.Invoke();
+
             ExperimentResult controlResult;
             ExperimentResult candidateResult;
 

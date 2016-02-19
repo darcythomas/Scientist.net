@@ -20,6 +20,13 @@ namespace GitHub.Internals
         /// </summary>
         /// <param name="control">The delegate to execute.</param>
         void Use(Func<T> control);
+
+        /// <summary>
+        /// Calls the supplied Action prior to an experiment being run.
+        /// Used for when a task requires an expensive setup.
+        /// </summary>
+        /// <param name="setup"></param>
+        void BeforeRun(Action setup);
     }
 
     /// <summary>
@@ -39,6 +46,13 @@ namespace GitHub.Internals
         /// </summary>
         /// <param name="control">The delegate to execute.</param>
         void Use(Func<Task<T>> control);
+
+        /// <summary>
+        /// Calls the supplied Action prior to an experiment being run.
+        /// Used for when a task requires an expensive setup.
+        /// </summary>
+        /// <param name="setup"></param>
+        void BeforeRun(Action setup);
     }
 
 }
